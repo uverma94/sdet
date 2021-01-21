@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Suite">
+  <test thread-count="5" name="testNG">
+    <classes>
+      <class name="suiteCRM.activity_1"/>
+      <class name="suiteCRM.activity_2"/>
+      <class name="suiteCRM.activity_3"/>
+      <class name="suiteCRM.activity_4"/>
+      <class name="suiteCRM.activity_5"/>
+      <class name="suiteCRM.activity_6"/>
+      <class name="suiteCRM.activity_7"/>
+      <class name="suiteCRM.activity_8"/>
+      <class name="suiteCRM.activity_9"/>
+    </classes>
+  </test> <!-- testNG -->
+</suite> <!-- Suite -->
