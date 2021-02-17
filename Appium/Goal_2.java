@@ -1,4 +1,4 @@
-package GoogleTasksandKeep;
+package GoogleChrome;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -10,6 +10,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import junit.framework.Assert;
@@ -25,43 +26,74 @@ public class Goal_2 {
 		DesiredCapabilities caps = new DesiredCapabilities();
 		caps.setCapability("deviceName", "5554");
 		caps.setCapability("platformName", "Android");
-		caps.setCapability("appPackage", "com.google.android.keep");
-		caps.setCapability("appActivity", ".activities.BrowseActivity");
+		caps.setCapability("appPackage", "com.android.chrome");
+		caps.setCapability("appActivity", "com.google.android.apps.chrome.Main");
 		caps.setCapability("noReset", true);
 		
 		URL appserver = new URL("http://0.0.0.0:4723/wd/hub");
 		driver = new AndroidDriver<MobileElement>(appserver, caps);
-		Thread.sleep(2000);
+		//driver.get("https://www.training-support.net/selenium");			
+		//Thread.sleep(2000);
 	}
 	
 	@Test
-	public void addtasktestcase() {
+	public void correctcredentials() throws InterruptedException {
 		
-		//Click the Create New Note button to add a new Note.
-		driver.findElementByXPath("//android.widget.ImageButton[@content-desc='New text note']").click();
-		driver.manage().timeouts().implicitlyWait(2000, TimeUnit.SECONDS);
-		
-		//Add a title for the note and add a small description.
-		driver.findElementByXPath("//*[@resource-id='com.google.android.keep:id/edit_note_text']").sendKeys("Goal: Use the Google Keep app to add a note.");
-		driver.findElementByXPath("//*[@resource-id='com.google.android.keep:id/editable_title']").sendKeys("Task1");
+		driver.get("https://www.training-support.net/selenium");		
+		Thread.sleep(5000);		
+		driver.findElement(MobileBy.AndroidUIAutomator("UiScrollable(UiSelector().scrollable(true)).scrollTextIntoView(\"Login Form\")"));
+		driver.findElementByXPath("//*[@text='Login Form']").click();
 	
-		//Press the back button
-		driver.findElementByXPath("//android.widget.ImageButton[@content-desc='Open navigation drawer']").click();
+		driver.manage().timeouts().implicitlyWait(7000, TimeUnit.SECONDS);
 		
-		//Assertion to ensure that the note was added.
-		String note1 = driver.findElementByXPath("//android.widget.TextView[@text='Task1']").getText();
-		String note2 = driver.findElementByXPath("//android.widget.TextView[@text='Goal: Use the Google Keep app to add a note.']").getText();
+		MobileElement username = driver.findElementByXPath("//*[@resource-id='username']");
+		MobileElement password = driver.findElementByXPath("//*[@resource-id='password']");
 		
-		Assert.assertEquals(note1, "Task1");
-		Assert.assertEquals(note2, "Goal: Use the Google Keep app to add a note.");
+		username.click();
+		username.sendKeys("admin");
+		password.click();
+		password.sendKeys("password");
+		
+		driver.findElementByXPath("//*[@text='Log in']").click();
+		Thread.sleep(3000);
+		String validlogin = driver.findElementByXPath("//*[@text='Welcome Back, admin']").getText();
+		Assert.assertEquals(validlogin, "Welcome Back, admin");		
+				
 		
 	}
+	
+	@Test
+	public void incorrectcredentials() throws InterruptedException {
+		
+		driver.get("https://www.training-support.net/selenium");		
+		Thread.sleep(5000);		
+		driver.findElement(MobileBy.AndroidUIAutomator("UiScrollable(UiSelector().scrollable(true)).scrollTextIntoView(\"Login Form\")"));
+		driver.findElementByXPath("//*[@text='Login Form']").click();
+	
+		driver.manage().timeouts().implicitlyWait(7000, TimeUnit.SECONDS);
+		
+
+		MobileElement username = driver.findElementByXPath("//*[@resource-id='username']");
+		MobileElement password = driver.findElementByXPath("//*[@resource-id='password']");
+		
+		username.click();
+		username.sendKeys("admin");
+		password.click();
+		password.sendKeys("passwo1");
+		
+		driver.findElementByXPath("//*[@text='Log in']").click();
+		Thread.sleep(3000);
+		String validlogin = driver.findElementByXPath("//*[@text='Invalid Credentials']").getText();
+		Assert.assertEquals(validlogin, "Invalid Credentials");		
+				
+		
+	}
+	
+	
 	
 	@AfterClass
 	public void close() {
 		driver.quit();
 	}
-	
-	
 
 }
