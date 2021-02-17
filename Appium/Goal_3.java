@@ -1,7 +1,8 @@
-package GoogleChrome;
+package GoogleTasksandKeep;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -10,13 +11,12 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import junit.framework.Assert;
 
 public class Goal_3 {
-
+	
 	WebDriverWait wait;
 	AndroidDriver<MobileElement> driver = null;
 	
@@ -26,78 +26,56 @@ public class Goal_3 {
 		DesiredCapabilities caps = new DesiredCapabilities();
 		caps.setCapability("deviceName", "5554");
 		caps.setCapability("platformName", "Android");
-		caps.setCapability("appPackage", "com.android.chrome");
-		caps.setCapability("appActivity", "com.google.android.apps.chrome.Main");
+		caps.setCapability("appPackage", "com.google.android.keep");
+		caps.setCapability("appActivity", ".activities.BrowseActivity");
 		caps.setCapability("noReset", true);
 		
 		URL appserver = new URL("http://0.0.0.0:4723/wd/hub");
 		driver = new AndroidDriver<MobileElement>(appserver, caps);
-		//driver.get("https://www.training-support.net/selenium");			
-		//Thread.sleep(2000);
+		Thread.sleep(2000);
 	}
 	
 	@Test
-	public void correctcredentials() throws InterruptedException {
+	public void addtasktestcase() {
 		
-		driver.get("https://www.training-support.net/selenium");		
-		Thread.sleep(5000);		
-		driver.findElement(MobileBy.AndroidUIAutomator("UiScrollable(UiSelector().scrollable(true)).scrollTextIntoView(\"Popups\")"));
-		driver.findElementByXPath("//*[@text='Popups']").click();
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		//Adding new Note
+		driver.findElementByXPath("//android.widget.ImageButton[@content-desc='New text note']").click();
+		driver.manage().timeouts().implicitlyWait(2000, TimeUnit.SECONDS);
+		driver.findElementByXPath("//*[@resource-id='com.google.android.keep:id/edit_note_text']").sendKeys("Goal: Use the Google Keep app to add a note with a reminder");
+		driver.findElementByXPath("//*[@resource-id='com.google.android.keep:id/editable_title']").sendKeys("Task2");
 		
-		driver.findElementByXPath("//*[@text='Sign In']").click();
-	
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		//Setting Reminder
+		driver.findElementByXPath("//android.widget.TextView[@content-desc='Reminder']").click();
+		//When the script runs in morning
+		MobileElement reminder = driver.findElementByXPath("//android.widget.TextView[@text='Later today']");
+		if(reminder.isDisplayed()) {
+			reminder.click();
+		}
+		//When the script runs in Evening 
+		else {		
+		driver.findElementByXPath("//*[@text='Pick a date & time']").click();	
+		driver.findElementByXPath("//android.widget.LinearLayout/android.widget.Spinner[1]").click();
+		driver.findElementByXPath("//*[@text='Today']").click();
+		driver.findElementByXPath("//android.widget.LinearLayout/android.widget.Spinner/android.widget.TextView").click();
+		driver.findElementByXPath("//*[@text='Afternoon']").click();
+		driver.findElementByXPath("//*[@resource-id='com.google.android.keep:id/save']").click();
+		}
 		
-		MobileElement username = driver.findElementByXPath("//*[@resource-id='username']");
-		MobileElement password = driver.findElementByXPath("//*[@resource-id='password']");
+		//Adding Assertions
+		driver.findElementByXPath("//android.widget.ImageButton[@content-desc='Open navigation drawer']").click();
+		String title = driver.findElementByXPath("//*[@resource-id='com.google.android.keep:id/index_note_title']").getText();
+		String note = driver.findElementByXPath("//*[@resource-id='com.google.android.keep:id/index_note_text_description']").getText();
+		String reminders = driver.findElementByXPath("//*[@resource-id='com.google.android.keep:id/reminder_chip_text']").getText();
 		
-		username.click();
-		username.sendKeys("admin");
-		password.click();
-		password.sendKeys("password");
-		
-		driver.findElementByXPath("//*[@text='Log in']").click();
-		Thread.sleep(3000);
-		String validlogin = driver.findElementByXPath("//*[@text='Welcome Back, admin']").getText();
-		Assert.assertEquals(validlogin, "Welcome Back, admin");					
-		
+		Assert.assertEquals(title, "Task2");
+		Assert.assertEquals(note, "Goal: Use the Google Keep app to add a note with a reminder");
+		Assert.assertEquals(reminders, "Today, 6:00 PM");
 	}
-	
-	@Test
-	public void incorrectcredentials() throws InterruptedException {
-		
-		driver.get("https://www.training-support.net/selenium");		
-		Thread.sleep(5000);		
-		driver.findElement(MobileBy.AndroidUIAutomator("UiScrollable(UiSelector().scrollable(true)).scrollTextIntoView(\"Popups\")"));
-		driver.findElementByXPath("//*[@text='Popups']").click();
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-		
-		driver.findElementByXPath("//*[@text='Sign In']").click();
-	
-		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-		
-		MobileElement username = driver.findElementByXPath("//*[@resource-id='username']");
-		MobileElement password = driver.findElementByXPath("//*[@resource-id='password']");
-		
-		username.click();
-		username.sendKeys("admin");
-		password.click();
-		password.sendKeys("passwo1");
-		
-		driver.findElementByXPath("//*[@text='Log in']").click();
-		Thread.sleep(3000);
-		String validlogin = driver.findElementByXPath("//*[@text='Invalid Credentials']").getText();
-		Assert.assertEquals(validlogin, "Invalid Credentials");		
-		
-	}
-	
-	
 	
 	@AfterClass
 	public void close() {
 		driver.quit();
 	}
-
+	
 	
 }
